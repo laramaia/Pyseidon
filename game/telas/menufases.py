@@ -1,17 +1,14 @@
 import pygame
 from telas.base import Tela
+from game.telas.fasevariaveis import Variaveis
 
 class MenuFases(Tela):
     def __init__(self, titulo="Fases"):
         super().__init__(titulo)
-        self.background = pygame.image.load('Imagens/background2.png').convert()
-        self.snake = pygame.image.load('Imagens/snake.png').convert_alpha()
+        self.background = pygame.image.load('imagens/background2.png').convert()
+        self.snake = pygame.image.load('imagens/snake.png').convert_alpha()
         self.snake = pygame.transform.scale(self.snake, (90, 60))
         self.titulo_fonte = pygame.font.Font(self.caminho_fonte, 35)
-
-        self.cor_botao = (38, 71, 153)
-        self.cor_borda = (40, 55, 135)
-        self.cor = self.cor_botao # inicializa cor dos botões
 
         self.botoes = [
             {"retangulo": pygame.Rect(390, 200, 550, 80), "cor": self.cor},
@@ -49,8 +46,8 @@ class MenuFases(Tela):
             texto_botao = texto_renderizado.get_rect(center=botao["retangulo"].center)
             self.screen.blit(texto_renderizado, texto_botao)
 
-    # def eventos(self, event):
-    #     if event.type == pygame.MOUSEBUTTONUP():
-    #         if self.botao_variaveis.collidepoint(event.pos):
-    #             running = False
-    #             return Subfases()
+    def eventos(self, event):
+        if event.type == pygame.MOUSEBUTTONUP:
+            pos = event.pos
+            if self.botoes[0]["retangulo"].collidepoint(pos): 
+                return Variaveis()

@@ -7,6 +7,9 @@ class Tela:
         self.caminho_fonte = "fontes/Pixeled.ttf"
         self.fonte_titulo = pygame.font.Font(self.caminho_fonte, 40)
         self.cor_titulo = (247, 248, 250)
+        self.cor_botao = (38, 71, 153)
+        self.cor_borda = (40, 55, 135)
+        self.cor = self.cor_botao # inicializa cor dos botões
 
     def desenhar(self): # visual (background, textos, etc.) da tela
         if self.titulo:

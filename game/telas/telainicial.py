@@ -5,8 +5,8 @@ import pygame
 class TelaInicial(Tela):
     def __init__(self, titulo="PYSEIDON"):
         super().__init__(titulo)
-        self.fundo = pygame.image.load("Imagens/background1.1.png").convert()
-        self.logo = pygame.image.load("Imagens/logo.png").convert_alpha()
+        self.fundo = pygame.image.load("imagens/background1.1.png").convert()
+        self.logo = pygame.image.load("imagens/logo.png").convert_alpha()
         self.logo = pygame.transform.scale(self.logo, (450, 220))
         self.texto = "CLIQUE PARA COMEÇAR"
 
@@ -16,8 +16,8 @@ class TelaInicial(Tela):
         self.frame_index = 0
         self.tempo_frame = 0
 
-        sheet1 = pygame.image.load("Imagens/background1.1.png").convert()
-        sheet2 = pygame.image.load("Imagens/background1.2.png").convert()
+        sheet1 = pygame.image.load("imagens/background1.1.png").convert()
+        sheet2 = pygame.image.load("imagens/background1.2.png").convert()
         self.frames = self.extrair_frames(sheet1, 3, 2) + self.extrair_frames(sheet2, 3, 2)
 
     def extrair_frames(self, spritesheet, columns, rows):
