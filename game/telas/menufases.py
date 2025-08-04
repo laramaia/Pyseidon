@@ -1,6 +1,6 @@
 import pygame
 from telas.base import Tela
-from game.telas.fasevariaveis import Variaveis
+from telas.fasevariaveis import Variaveis
 
 class MenuFases(Tela):
     def __init__(self, titulo="Fases"):
@@ -8,7 +8,20 @@ class MenuFases(Tela):
         self.background = pygame.image.load('imagens/background2.png').convert()
         self.snake = pygame.image.load('imagens/snake.png').convert_alpha()
         self.snake = pygame.transform.scale(self.snake, (90, 60))
-        self.titulo_fonte = pygame.font.Font(self.caminho_fonte, 35)
+        self.engrenagem = pygame.image.load('imagens/engrenagem.png')
+        self.engrenagem = pygame.transform.scale(self.engrenagem, (60, 60))
+
+        self.engrenagem_pos = (1260, 40)
+        # posição e tamanho da engrenagem
+        self.engrenagem_rect = pygame.Rect(self.engrenagem_pos, self.engrenagem.get_size())
+        self.mostrar_popup = False
+        self.opcoes_popup = ["Nova Fase", "Listar Desafios", "Listar Alunos"]
+
+        self.retangulos_popup = [
+            pygame.Rect(self.engrenagem_pos[0] - 200, self.engrenagem_pos[1] + 15, 200, 40), 
+            pygame.Rect(self.engrenagem_pos[0] - 200, self.engrenagem_pos[1] + 56, 200, 40),  
+            pygame.Rect(self.engrenagem_pos[0] - 200, self.engrenagem_pos[1] + 98, 200, 40)  
+        ]
 
         self.botoes = [
             {"retangulo": pygame.Rect(390, 200, 550, 80), "cor": self.cor},
@@ -46,8 +59,22 @@ class MenuFases(Tela):
             texto_botao = texto_renderizado.get_rect(center=botao["retangulo"].center)
             self.screen.blit(texto_renderizado, texto_botao)
 
+        if self.mostrar_popup:
+            for i, rect in enumerate(self.retangulos_popup):
+                pygame.draw.rect(self.screen, (200, 200, 200), rect, border_radius=8)  # fundo branco
+                pygame.draw.rect(self.screen, (20, 20, 20), rect, 4, border_radius=8)
+
+                texto_popup = self.opcoes_popup[i]
+                texto_popup_renderizado = pygame.font.Font("fontes/Ithaca.ttf", 19).render(texto_popup, True, (0, 0, 0))
+                texto_rect = texto_popup_renderizado.get_rect(center=rect.center)
+                self.screen.blit(texto_popup_renderizado, texto_rect)
+
+        self.screen.blit(self.engrenagem, (1250, 40))
+
     def eventos(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
             pos = event.pos
             if self.botoes[0]["retangulo"].collidepoint(pos): 
                 return Variaveis()
+            if self.engrenagem_rect.collidepoint(pos):
+                self.mostrar_popup = not self.mostrar_popup
