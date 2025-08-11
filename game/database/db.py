@@ -1,7 +1,7 @@
 import sqlite3
 
-con = sqlite3.connect("db.py")
-cursor = sqlite3.Cursor()
+con = sqlite3.connect("banco.db")
+cursor = con.cursor()
 
 cursor.execute(
     """
@@ -13,3 +13,6 @@ cursor.execute(
         resposta_certa TEXT
     )
 """)
+
+con.commit()
+con.close()

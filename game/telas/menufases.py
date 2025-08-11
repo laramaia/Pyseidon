@@ -1,6 +1,8 @@
 import pygame
 from telas.base import Tela
 from telas.fasevariaveis import Variaveis
+# from database.crudfase import adicionar_fase
+
 
 class MenuFases(Tela):
     def __init__(self, titulo="Fases"):
