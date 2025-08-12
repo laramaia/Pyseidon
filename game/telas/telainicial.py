@@ -19,15 +19,6 @@ class TelaInicial(Tela):
         sheet1 = pygame.image.load("imagens/background1.1.png").convert()
         sheet2 = pygame.image.load("imagens/background1.2.png").convert()
         self.frames = self.extrair_frames(sheet1, 3, 2) + self.extrair_frames(sheet2, 3, 2)
-
-    def extrair_frames(self, spritesheet, columns, rows):
-        frames = []
-        for row in range(rows):
-            for col in range(columns):
-                rect = pygame.Rect(col * self.frame_width, row * self.frame_height, self.frame_width, self.frame_height)
-                frame = spritesheet.subsurface(rect).copy()
-                frames.append(frame)
-        return frames
     
     def atualizar(self, dt):
         # dt = tempo passado desde o último update (milissegundos)
