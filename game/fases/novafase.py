@@ -7,7 +7,9 @@ class NovaFase(Tela):
         super().__init__(titulo)
 
         self.background = pygame.image.load("imagens/background1.1.png").convert()
-        self.fonte = pygame.font.Font("fontes/Ithaca.ttf", 20)
+        self.fonte_titulo = pygame.font.Font(self.caminho_fonte, 26)
+        self.fonte = pygame.font.Font("fontes/Ithaca.ttf", 26)
+        self.botao_salvar = {"rect": pygame.Rect(570, 520, 200, 50), "cor": (100, 200, 100), "texto": "Salvar"}
 
         self.frame_width = 640
         self.frame_height = 540
@@ -20,10 +22,10 @@ class NovaFase(Tela):
         self.frames = self.extrair_frames(sheet1, 3, 2) + self.extrair_frames(sheet2, 3, 2)
 
         self.retangulos_formulario = [
-            {"label": "nome", "coordenadas": pygame.Rect(400, 160, 550, 50)},
-            {"label": "descricao", "coordenadas": pygame.Rect(400, 240, 550, 50)},
-            {"label": "restricao", "coordenadas": pygame.Rect(400, 320, 550, 50)},
-            {"label": "resposta_certa", "coordenadas": pygame.Rect(400, 400, 550, 50)},
+            {"label": "nome", "coordenadas": pygame.Rect(400, 190, 550, 50)},
+            {"label": "descricao", "coordenadas": pygame.Rect(400, 270, 550, 50)},
+            {"label": "restricao", "coordenadas": pygame.Rect(400, 350, 550, 50)},
+            {"label": "resposta_certa", "coordenadas": pygame.Rect(400, 430, 550, 50)},
         ]
 
         self.valores_formulario = ["", "", "", ""]
@@ -33,18 +35,27 @@ class NovaFase(Tela):
         frame_atual = pygame.transform.scale(self.frames[self.frame_index], self.screen.get_size())
         self.screen.blit(frame_atual, (0, 0))
 
-        titulo = self.fonte_titulo.render(self.titulo, True, self.cor_titulo)
-        self.screen.blit(titulo, (490, 50))
+        titulo = self.fonte_titulo.render(self.titulo, True, (37, 27, 92))
+        self.screen.blit(titulo, (580, 70))
 
-        i = 140
-        for campo in self.retangulos_formulario:
+        for i, campo in enumerate(self.retangulos_formulario):
             pygame.draw.rect(self.screen, (243, 243, 243), campo["coordenadas"])
             pygame.draw.rect(self.screen, (0, 0, 0), campo["coordenadas"], 4)
 
-            texto = self.fonte.render(campo["label"], True, (0, 0, 0))  
-            self.screen.blit(texto, (410, i))
+            descricao_label = self.fonte.render(campo["label"], True, self.cor_titulo)  
+            self.screen.blit(descricao_label, (campo["coordenadas"].x + 5, campo["coordenadas"].y - 25))
 
-            i += 80
+            texto_digitado = self.valores_formulario[i]
+            texto_renderizado = self.fonte.render(texto_digitado, True, (0, 0, 0))
+            self.screen.blit(texto_renderizado, (campo["coordenadas"].x + 10, campo["coordenadas"].y + 15))
+
+        # botao
+        pygame.draw.rect(self.screen, self.botao_salvar["cor"], self.botao_salvar["rect"])
+        pygame.draw.rect(self.screen, (0, 0, 0), self.botao_salvar["rect"], 2)
+
+        texto_botao = self.fonte.render(self.botao_salvar["texto"], True, (0, 0, 0))
+        texto_retangulo = texto_botao.get_rect(center=self.botao_salvar["rect"].center)
+        self.screen.blit(texto_botao, texto_retangulo)
 
     def atualizar(self, dt):
         # dt = tempo passado desde o último update (milissegundos)
@@ -59,14 +70,17 @@ class NovaFase(Tela):
                 if campo["coordenadas"].collidepoint(event.pos):
                     self.indice_campo = i
 
-                elif event.type == pygame.KEYDOWN:
-                    # Tecla Enter salva a fase
-                    if event.key == pygame.K_RETURN:
-                        self.salvar_fase()
+            if self.botao_salvar["rect"].collidepoint(event.pos):
+                self.salvar_fase()
 
-                    # Tecla é adicionada ao campo de texto
-                    else:
-                        self.valores_formulario[self.indice_campo] += event.unicode
+        elif event.type == pygame.KEYDOWN:
+            # Tecla Enter salva a fase
+            if event.key == pygame.K_RETURN:
+                self.salvar_fase()
+
+            # Tecla é adicionada ao campo de texto
+            else:
+                self.valores_formulario[self.indice_campo] += event.unicode
 
     def salvar_fase(self):
         nome, descricao, restricao, resposta_certa = self.valores_formulario

@@ -19,11 +19,11 @@ class Tela:
     def eventos(self, event): # troca de telas
         pass
 
-        def extrair_frames(self, spritesheet, columns, rows):
-            frames = []
-            for row in range(rows):
-                for col in range(columns):
-                    rect = pygame.Rect(col * self.frame_width, row * self.frame_height, self.frame_width, self.frame_height)
-                    frame = spritesheet.subsurface(rect).copy()
-                    frames.append(frame)
-            return frames
+    def extrair_frames(self, spritesheet, columns, rows):
+        frames = []
+        for row in range(rows):
+            for col in range(columns):
+                rect = pygame.Rect(col * self.frame_width, row * self.frame_height, self.frame_width, self.frame_height)
+                frame = spritesheet.subsurface(rect).copy()
+                frames.append(frame)
+        return frames

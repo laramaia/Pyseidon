@@ -1,8 +1,7 @@
 import pygame
 from telas.base import Tela
-from telas.fasevariaveis import Variaveis
-# from database.crudfase import adicionar_fase
-
+from fases.estruturafase import Fase
+from fases.novafase import NovaFase
 
 class MenuFases(Tela):
     def __init__(self, titulo="Fases"):
@@ -17,7 +16,7 @@ class MenuFases(Tela):
         # posição e tamanho da engrenagem
         self.engrenagem_rect = pygame.Rect(self.engrenagem_pos, self.engrenagem.get_size())
         self.mostrar_popup = False
-        self.opcoes_popup = ["Nova Fase", "Listar Desafios", "Listar Alunos"]
+        self.opcoes_popup = ["Nova Fase", "Listar Fases", "Listar Alunos"]
 
         self.retangulos_popup = [
             pygame.Rect(self.engrenagem_pos[0] - 200, self.engrenagem_pos[1] + 15, 200, 40), 
@@ -76,7 +75,16 @@ class MenuFases(Tela):
     def eventos(self, event):
         if event.type == pygame.MOUSEBUTTONUP:
             pos = event.pos
+
             if self.botoes[0]["retangulo"].collidepoint(pos): 
-                return Variaveis()
+                return Fase()
             if self.engrenagem_rect.collidepoint(pos):
                 self.mostrar_popup = not self.mostrar_popup
+                return None  # Só abrir/fechar o popup
+
+            if self.mostrar_popup:
+                for i, rect in enumerate(self.retangulos_popup):
+                    if rect.collidepoint(pos):
+                        if i == 0:  # primeira opção "Nova Fase"
+                            print("Clicou em Nova Fase!")  # pra debug
+                            return NovaFase()
