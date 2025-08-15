@@ -1,4 +1,5 @@
 from telas.base import Tela
+from database.crudfase import adicionar_fase
 import pygame
 
 class NovaFase(Tela):
@@ -25,6 +26,9 @@ class NovaFase(Tela):
             {"label": "resposta_certa", "coordenadas": pygame.Rect(400, 400, 550, 50)},
         ]
 
+        self.valores_formulario = ["", "", "", ""]
+        self.indice_campo = 0
+
     def desenhar(self):
         frame_atual = pygame.transform.scale(self.frames[self.frame_index], self.screen.get_size())
         self.screen.blit(frame_atual, (0, 0))
@@ -48,3 +52,28 @@ class NovaFase(Tela):
         if self.tempo_frame >= self.frame_duration:
             self.tempo_frame = 0
             self.frame_index = (self.frame_index + 1) % len(self.frames)
+
+    def eventos(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            for i, campo in enumerate(self.retangulos_formulario):
+                if campo["coordenadas"].collidepoint(event.pos):
+                    self.indice_campo = i
+
+                elif event.type == pygame.KEYDOWN:
+                    # Tecla Enter salva a fase
+                    if event.key == pygame.K_RETURN:
+                        self.salvar_fase()
+
+                    # Tecla é adicionada ao campo de texto
+                    else:
+                        self.valores_formulario[self.indice_campo] += event.unicode
+
+    def salvar_fase(self):
+        nome, descricao, restricao, resposta_certa = self.valores_formulario
+
+        if nome != "" and descricao != "" and restricao != "" and resposta_certa != "":
+            adicionar_fase(nome, descricao, restricao, resposta_certa)
+            print("Fase adicionada com sucesso!")
+            self.valores_formulario = ["", "", "", ""]  # limpa os campos após salvar
+        else:
+            print("Preencha todos os campos antes de salvar.")
