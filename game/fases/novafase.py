@@ -35,7 +35,7 @@ class NovaFase(Tela):
         frame_atual = pygame.transform.scale(self.frames[self.frame_index], self.screen.get_size())
         self.screen.blit(frame_atual, (0, 0))
 
-        titulo = self.fonte_titulo.render(self.titulo, True, (37, 27, 92))
+        titulo = self.fonte_titulo.render(self.titulo, True, self.cor_titulo)
         self.screen.blit(titulo, (580, 70))
 
         for i, campo in enumerate(self.retangulos_formulario):

@@ -50,3 +50,12 @@ def listar_fases():
     fases = cursor.fetchall()
     con.close()
     return fases
+
+def buscar_fase_por_nome(nome):
+    con = sqlite3.connect("banco.db")
+    cursor = con.cursor()
+
+    cursor.execute("SELECT nome, descricao, restricao, resposta_certa FROM Fases WHERE nome = ?", (nome,))
+    fase = cursor.fetchone()
+    con.close()
+    return fase

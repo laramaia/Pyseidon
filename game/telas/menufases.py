@@ -2,6 +2,7 @@ import pygame
 from telas.base import Tela
 from fases.estruturafase import Fase
 from fases.novafase import NovaFase
+from database.crudfase import listar_fases
 
 class MenuFases(Tela):
     def __init__(self, titulo="Fases"):
@@ -24,12 +25,12 @@ class MenuFases(Tela):
             pygame.Rect(self.engrenagem_pos[0] - 200, self.engrenagem_pos[1] + 98, 200, 40)  
         ]
 
-        self.botoes = [
-            {"retangulo": pygame.Rect(390, 200, 550, 80), "cor": self.cor},
-            {"retangulo": pygame.Rect(390, 290, 550, 80), "cor": self.cor},
-            {"retangulo": pygame.Rect(390, 380, 550, 80), "cor": self.cor},
-            {"retangulo": pygame.Rect(390, 470, 550, 80), "cor": self.cor},
-        ]
+        self.fases = listar_fases()  # busca do banco
+        self.botoes = []
+        for i, fase in enumerate(self.fases):
+            rect = pygame.Rect(390, 200 + i * 90, 550, 80)
+            self.botoes.append({"retangulo": rect, "cor": self.cor, "nome": fase[1]})  # fase[1] = nome da fase
+
 
     def atualizar(self, dt):
         pass
@@ -55,7 +56,7 @@ class MenuFases(Tela):
             pygame.draw.rect(self.screen, self.cor, botao["retangulo"], border_radius=15)
             pygame.draw.rect(self.screen, self.cor_borda, botao["retangulo"], 7, border_radius=15)
 
-            texto = self.texto_botoes[i]
+            texto = botao["nome"]  # nome vindo do banco
             texto_renderizado = fonte.render(texto, True, self.cor_titulo)
             texto_botao = texto_renderizado.get_rect(center=botao["retangulo"].center)
             self.screen.blit(texto_renderizado, texto_botao)
@@ -76,8 +77,11 @@ class MenuFases(Tela):
         if event.type == pygame.MOUSEBUTTONUP:
             pos = event.pos
 
-            if self.botoes[0]["retangulo"].collidepoint(pos): 
-                return Fase()
+            for i, botao in enumerate(self.botoes):
+                if botao["retangulo"].collidepoint(pos):
+                    fase_nome = botao['nome']
+                    return Fase(fase_nome)
+
             if self.engrenagem_rect.collidepoint(pos):
                 self.mostrar_popup = not self.mostrar_popup
                 return None  # Só abrir/fechar o popup
