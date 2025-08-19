@@ -1,8 +1,6 @@
+import requests
+from fases.feedbackfase import TelaSucesso, TelaFracasso
 from database.crudfase import buscar_fase_por_nome
-from RestrictedPython import compile_restricted
-from RestrictedPython import safe_globals
-from RestrictedPython import limited_builtins
-from RestrictedPython import utility_builtins
 from telas.base import Tela
 import time
 import pygame
@@ -17,6 +15,7 @@ class Fase(Tela):
         self.fonte = pygame.font.Font("fontes/Ithaca.ttf", 26)
         self.botao_voltar = {"rect": pygame.Rect(740, 580, 200, 60), "cor": (232, 73, 68), "texto": "Voltar"}
         self.botao_submeter = {"rect": pygame.Rect(1020, 580, 200, 60), "cor": (40, 55, 135), "texto": "Submeter"}
+        self.resultado_execucao = ""
 
         self.codigo = "" 
         self.cursor_pos = len(self.codigo)  # Posição do cursor no texto
@@ -70,12 +69,36 @@ class Fase(Tela):
         texto_codigo = self.fonte.render(self.codigo, True, (255, 255, 255))
         self.screen.blit(texto_codigo, (self.editor_codigo.x + 20, self.editor_codigo.y + 20))
 
+
+        linhas = self.codigo.split('\n')
+        y = self.editor_codigo.y + 20
+        for linha in linhas:
+            texto_codigo = self.fonte.render(linha, True, (255, 255, 255))
+            self.screen.blit(texto_codigo, (self.editor_codigo.x + 20, y))
+            y += texto_codigo.get_height() + 5
+
+        # desenhar resultado da execução abaixo do editor
+        resultado_titulo = self.fonte.render("Resultado: ", True, (255, 255, 255))
+        self.screen.blit(resultado_titulo, (self.editor_codigo.x + 20, y + 10))
+
+        resultado_linhas = self.resultado_execucao.split('\n')
+        y += resultado_titulo.get_height() + 20
+        for linha in resultado_linhas:
+            texto_resultado = self.fonte.render(linha, True, (200, 200, 200))
+            self.screen.blit(texto_resultado, (self.editor_codigo.x + 20, y))
+            y += texto_resultado.get_height() + 2
+
     def eventos(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.botao_voltar["rect"].collidepoint(event.pos):
                 from telas.menufases import MenuFases
                 time.sleep(0.5)
                 return MenuFases()
+            
+            if self.botao_submeter["rect"].collidepoint(event.pos):
+                # self.resultado_execucao = self.executar_codigo(self.codigo)
+                return TelaSucesso()
+
             
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:  # Apagar o último caractere
@@ -88,24 +111,24 @@ class Fase(Tela):
     def atualizar(self, dt):
         pass
 
-    def executar_codigo(self, codigo):
-        try:
-            byte_code = compile_restricted(codigo, '<string>', 'exec')
 
-            safe_locals = {}
-            safe_globals.update({
-                '__builtins__': {
-                    'print': print, 
-                    'range': range,
-                    'list': list,
-                    'tuple': tuple,
-                    'str': str,
-                    'int': int,
-                    'float': float,
-                },
-            })
+    def executar_codigo(self, codigo, versao="3.10.0"):
+        url = "https://emkc.org/api/v2/piston/execute"
 
-            exec(byte_code, safe_globals, safe_locals)
+        payload = {
+            "language": "python",
+            "version": versao,
+            "files": [
+                {
+                    "content": codigo
+                }
+            ]
+        }
 
-        except Exception as e:
-            print(f"Erro ao executar código: {e}")
+        response = requests.post(url, json=payload)
+
+        if response.status_code == 200:
+            resultado = response.json()
+            return resultado.get("run", {}).get("stdout", "") 
+        else:
+            return f"Erro na execução: {response.text}"
