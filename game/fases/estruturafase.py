@@ -69,6 +69,12 @@ class Fase(Tela):
         texto_codigo = self.fonte.render(self.codigo, True, (255, 255, 255))
         self.screen.blit(texto_codigo, (self.editor_codigo.x + 20, self.editor_codigo.y + 20))
 
+        resposta_titulo = self.fonte.render("RESPOSTA", True, (0, 0, 0))
+        self.screen.blit(resposta_titulo, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 220))
+
+        resposta_texto = self.fonte.render(self.resposta_certa, True, (0, 0, 0))
+        self.screen.blit(resposta_texto, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 250))
+
 
         linhas = self.codigo.split('\n')
         y = self.editor_codigo.y + 20
@@ -96,8 +102,12 @@ class Fase(Tela):
                 return MenuFases()
             
             if self.botao_submeter["rect"].collidepoint(event.pos):
-                # self.resultado_execucao = self.executar_codigo(self.codigo)
-                return TelaSucesso()
+                self.resultado_execucao = self.executar_codigo(self.codigo)
+
+                if self.resposta_certa.strip() == self.resultado_execucao.strip():
+                    return TelaSucesso()
+                else:
+                    return TelaFracasso()
 
             
         if event.type == pygame.KEYDOWN:
