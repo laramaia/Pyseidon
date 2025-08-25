@@ -10,7 +10,10 @@ class Fase(Tela):
     def __init__(self, nome_fase, titulo="Fases"):
         super().__init__(titulo)
         self.background = pygame.image.load('imagens/background2.png').convert()
-        self.detalhes_fase = pygame.Rect(80, 40, 580, 600)
+        self.detalhes_fase = pygame.image.load('imagens/pergaminho.png')
+        self.detalhes_fase = pygame.transform.scale(self.detalhes_fase, (600, 680))
+        self.detalhes_fase_rect = self.detalhes_fase.get_rect()
+        self.detalhes_fase_rect.topleft = (70, 2) 
         self.editor_codigo = pygame.Rect(700, 40, 580, 520)
         self.fonte = pygame.font.Font("fontes/Ithaca.ttf", 26)
         self.botao_voltar = {"rect": pygame.Rect(740, 580, 200, 60), "cor": (232, 73, 68), "texto": "Voltar"}
@@ -33,7 +36,7 @@ class Fase(Tela):
         fundo = pygame.transform.scale(self.background, self.screen.get_size())
         self.screen.blit(fundo, (0, 0))
 
-        pygame.draw.rect(self.screen, (221, 170, 75), self.detalhes_fase)
+        self.screen.blit(self.detalhes_fase, self.detalhes_fase_rect)
         pygame.draw.rect(self.screen, (58, 55, 55), self.editor_codigo)
 
         pygame.draw.rect(self.screen, self.botao_voltar["cor"], self.botao_voltar["rect"])
@@ -49,31 +52,31 @@ class Fase(Tela):
         self.screen.blit(texto_botao, texto_retangulo)
 
         desafio_titulo = self.fonte.render("DESAFIO:", True, (0, 0, 0))
-        self.screen.blit(desafio_titulo, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 20))
+        self.screen.blit(desafio_titulo, (self.detalhes_fase_rect.x + 80, self.detalhes_fase_rect.y + 20))
 
         desafio_texto = self.fonte.render(self.nome, True, (0, 0, 0))
-        self.screen.blit(desafio_texto, (self.detalhes_fase.x + 100, self.detalhes_fase.y + 20))
+        self.screen.blit(desafio_texto, (self.detalhes_fase_rect.x + 100, self.detalhes_fase_rect.y + 20))
 
         descricao_titulo = self.fonte.render("DESCRIÇÃO", True, (0, 0, 0))
-        self.screen.blit(descricao_titulo, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 70))
+        self.screen.blit(descricao_titulo, (self.detalhes_fase_rect.x + 80, self.detalhes_fase_rect.y + 70))
 
         descricao_texto = self.fonte.render(self.descricao, True, (0, 0, 0))
-        self.screen.blit(descricao_texto, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 100))
+        self.screen.blit(descricao_texto, (self.detalhes_fase_rect.x + 80, self.detalhes_fase_rect.y + 100))
 
         restricao_titulo = self.fonte.render("RESTRIÇÃO", True, (0, 0, 0))
-        self.screen.blit(restricao_titulo, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 160))
+        self.screen.blit(restricao_titulo, (self.detalhes_fase_rect.x + 80, self.detalhes_fase_rect.y + 160))
 
         restricao_texto = self.fonte.render(self.restricao, True, (0, 0, 0))
-        self.screen.blit(restricao_texto, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 190))
+        self.screen.blit(restricao_texto, (self.detalhes_fase_rect.x + 80, self.detalhes_fase_rect.y + 190))
 
         texto_codigo = self.fonte.render(self.codigo, True, (255, 255, 255))
         self.screen.blit(texto_codigo, (self.editor_codigo.x + 20, self.editor_codigo.y + 20))
 
         resposta_titulo = self.fonte.render("RESPOSTA", True, (0, 0, 0))
-        self.screen.blit(resposta_titulo, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 220))
+        self.screen.blit(resposta_titulo, (self.detalhes_fase_rect.x + 80, self.detalhes_fase_rect.y + 220))
 
         resposta_texto = self.fonte.render(self.resposta_certa, True, (0, 0, 0))
-        self.screen.blit(resposta_texto, (self.detalhes_fase.x + 20, self.detalhes_fase.y + 250))
+        self.screen.blit(resposta_texto, (self.detalhes_fase_rect.x + 80, self.detalhes_fase_rect.y + 250))
 
 
         linhas = self.codigo.split('\n')

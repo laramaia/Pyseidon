@@ -1,4 +1,5 @@
 import sqlite3
+import database.db  
 from datetime import datetime
 
 def adicionar_fase(nome, descricao, restricao, resposta_certa):
